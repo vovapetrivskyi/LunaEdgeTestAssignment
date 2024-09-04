@@ -1,4 +1,4 @@
-﻿using LunaEdgeRepositoryLayer.Models;
+﻿using LunaEdgeServiceLayer.Data.Models;
 using LunaEdgeServiceLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +6,23 @@ namespace LunaEdgeServiceLayer.Implementations
 {
 	public class UserService : IUserService
 	{
-		public Task<User> FindByLoginAsync(string login)
+		private readonly IUnitOfwork _unitOfWork;
+		IUserRepository _repository;
+
+		public UserService(IUnitOfwork unitOfWork)
 		{
-			throw new NotImplementedException();
+			_unitOfWork = unitOfWork;
+			_repository = new UserRepository(_unitOfWork);
 		}
 
-		public Task<IActionResult> SaveUser(User user)
+		public async Task<User> FindByLoginAsync(string login)
 		{
-			throw new NotImplementedException();
+			return await _repository.FindByLoginAsync(login);
+		}
+
+		public async Task<ActionResult<User>> SaveUser(User user)
+		{
+			return await _repository.Create(user);
 		}
 	}
 }

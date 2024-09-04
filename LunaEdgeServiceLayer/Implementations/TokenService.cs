@@ -1,4 +1,4 @@
-﻿using LunaEdgeRepositoryLayer.Models;
+﻿using LunaEdgeServiceLayer.Data.Models;
 using LunaEdgeServiceLayer.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

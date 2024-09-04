@@ -1,11 +1,9 @@
 ﻿using LunaEdgeServiceLayer.Data.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LunaEdgeServiceLayer.Interfaces
 {
-	public interface IUserService
+	public interface IUserRepository : IRepository<User>
 	{
-		Task<ActionResult<User>> SaveUser(User user);
 		Task<User> FindByLoginAsync(string login);
 	}
 }

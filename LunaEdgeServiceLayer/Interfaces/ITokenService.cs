@@ -1,4 +1,4 @@
-﻿using LunaEdgeRepositoryLayer.Models;
+﻿using LunaEdgeServiceLayer.Data.Models;
 
 namespace LunaEdgeServiceLayer.Interfaces
 {

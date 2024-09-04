@@ -1,4 +1,4 @@
-﻿namespace LunaEdgeRepositoryLayer.Models
+﻿namespace LunaEdgeServiceLayer.Data.Models
 {
 	public class User
 	{
@@ -9,6 +9,6 @@
 		public string PasswordSalt { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
-		public ICollection<Models.Task> Tasks { get; set; } = new List<Models.Task>();
+		public ICollection<Task> Tasks { get; set; } = new List<Models.Task>();
 	}
 }

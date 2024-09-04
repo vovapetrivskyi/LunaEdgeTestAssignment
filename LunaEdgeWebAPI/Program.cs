@@ -1,6 +1,9 @@
-﻿using LunaEdgeServiceLayer.Implementations;
+﻿using LunaEdgeServiceLayer.Data;
+using LunaEdgeServiceLayer.Implementations;
 using LunaEdgeServiceLayer.Interfaces;
+using LunaEdgeWebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -14,6 +17,8 @@ namespace LunaEdgeWebAPI
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
+			builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+			builder.Services.AddProblemDetails();
 
 			builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -69,9 +74,14 @@ namespace LunaEdgeWebAPI
 				};
 			});
 
-			builder.Services.AddSingleton<ITokenService, TokenService>();
+			builder.Services.AddScoped<ITokenService, TokenService>();
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddTransient<IPasswordService, PasswordService>();
+
+			var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
+			builder.Services.AddDbContext<AppDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+			builder.Services.AddScoped<IUnitOfwork, UnitOfwork>();
 
 			var app = builder.Build();
 
@@ -89,6 +99,8 @@ namespace LunaEdgeWebAPI
 			app.UseAuthorization();
 
 			app.MapControllers();
+
+			app.UseExceptionHandler();
 
 			app.Run();
 		}

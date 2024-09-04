@@ -1,5 +1,7 @@
-﻿using LunaEdgeRepositoryLayer.Models;
+﻿using LunaEdgeServiceLayer.Data.Models;
 using LunaEdgeServiceLayer.Interfaces;
+using LunaEdgeWebAPI.Models.Requests;
+using LunaEdgeWebAPI.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,24 +27,45 @@ namespace LunaEdgeWebAPI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register(RegistrationRequest request)
 		{
-			var salt = _passwordService.GenerateSalt();
-
-			var user = new User
+			if (ModelState.IsValid)
 			{
-				Id = Guid.NewGuid(),
-				Username = request.Username,
-				Email = request.Email,
-				PasswordHash = _passwordService.HashPassword(request.Password, salt),
-				PasswordSalt = Convert.ToBase64String(salt),
-				CreatedAt = DateTime.UtcNow,
-				UpdatedAt = DateTime.UtcNow
-			};
+				User existingUser = await _userService.FindByLoginAsync(request.Username);
 
-			await _userService.SaveUser(user);
+				if (existingUser != null) 
+				{
+					return BadRequest("User with same username is exist");
+				}
 
-			var token = _tokenService.CreateToken(user);
+				existingUser = await _userService.FindByLoginAsync(request.Email);
 
-			return Ok(new AuthResponse { Username = user.Username, Token = token });
+				if (existingUser != null)
+				{
+					return BadRequest("User with same email is exist");
+				}
+
+				var salt = _passwordService.GenerateSalt();
+
+					var user = new User
+					{
+						Id = Guid.NewGuid(),
+						Username = request.Username,
+						Email = request.Email,
+						PasswordHash = _passwordService.HashPassword(request.Password, salt),
+						PasswordSalt = Convert.ToBase64String(salt),
+						CreatedAt = DateTime.UtcNow,
+						UpdatedAt = DateTime.UtcNow
+					};
+
+					await _userService.SaveUser(user);
+
+					var token = _tokenService.CreateToken(user);
+
+					return Ok(new AuthResponse { Username = user.Username, Token = token });
+			}
+			else
+			{ 
+				return BadRequest();
+			}
 		}
 
 		[HttpPost]
@@ -62,18 +85,9 @@ namespace LunaEdgeWebAPI.Controllers
 				return Unauthorized("Invalid credentials");
 			}
 
-			// Generate token
 			var token = _tokenService.CreateToken(user);
 
-			// Return the token
 			return Ok(new AuthResponse { Username = user.Username, Token = token });
-		}
-
-		[HttpPost]
-		[Authorize]
-		public IActionResult Test()
-		{
-			return Ok();
 		}
 	}
 }
