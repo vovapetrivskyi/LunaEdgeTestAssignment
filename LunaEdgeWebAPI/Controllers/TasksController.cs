@@ -2,11 +2,9 @@
 
 namespace LunaEdgeWebAPI.Controllers
 {
+	[ApiController]
 	public class TasksController : Controller
 	{
-		public IActionResult Index()
-		{
-			return View();
-		}
+		
 	}
 }
