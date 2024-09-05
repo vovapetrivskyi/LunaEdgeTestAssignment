@@ -1,5 +1,6 @@
 ﻿using LunaEdgeServiceLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
@@ -29,9 +30,9 @@ namespace LunaEdgeServiceLayer.Implementations
 			return await _repository.GetTaskByIdAndUser(taskId, userGuid);
 		}
 
-		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userGuid)
+		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userGuid, string sortBy, string sortDirection, int page, int pageSize)
 		{
-			var tasks = await _repository.Get();
+			var tasks = (await _repository.Get()).Where(t => t.UserId == userGuid);
 
 			if (tasks == null)
 			{
@@ -39,8 +40,6 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 			else
 			{
-				tasks = tasks.Where(task => task.UserId == userGuid);
-
 				if (parameters != null)
 				{
 					if (parameters.Title != string.Empty)
@@ -73,6 +72,22 @@ namespace LunaEdgeServiceLayer.Implementations
 					}
 				}
 
+				if (!string.IsNullOrWhiteSpace(sortBy))
+				{
+					//sorting
+					tasks = sortDirection.ToLower() switch
+					{
+						"desc" => tasks.OrderByDescending(t => GetPropertyValue(t, sortBy)),
+						_ => tasks.OrderBy(t => GetPropertyValue(t, sortBy)),
+					};
+				}
+
+				// Pagination
+				tasks = tasks
+					.Skip((page - 1) * pageSize)
+					.Take(pageSize)
+					.ToList();
+
 				return tasks;
 			}
 		}
@@ -80,6 +95,17 @@ namespace LunaEdgeServiceLayer.Implementations
 		public async System.Threading.Tasks.Task<IActionResult> UpdateTask(Data.Models.Task task, Guid userId)
 		{
 			return await _repository.UpdateTask(task.Id, task, userId, nameof(task.CreatedAt));
+		}
+
+		/// <summary>
+		/// /Helper method to get the property value dynamically by property name
+		/// </summary>
+		/// <param name="task">Task Object</param>
+		/// <param name="propertyName">Sorting property name</param>
+		/// <returns>Property value </returns>
+		private object GetPropertyValue(Data.Models.Task task, string propertyName)
+		{
+			return typeof(Data.Models.Task).GetProperty(propertyName)?.GetValue(task, null) ?? 0;
 		}
 	}
 }

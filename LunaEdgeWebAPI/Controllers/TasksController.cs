@@ -20,11 +20,15 @@ namespace LunaEdgeWebAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAllTasks(TaskQueryParameters queryParameters) 
+		public async Task<IActionResult> GetAllTasks(TaskQueryParameters queryParameters, 
+			[FromQuery] string? sortBy = null,
+			[FromQuery] string? sortDirection = "asc",
+			[FromQuery] int page = 1,
+			[FromQuery] int pageSize = 10) 
 		{
 			if (Guid.TryParse(HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out Guid userId))
 			{
-				var tasks = await _taskService.GetTasks(queryParameters, userId);
+				var tasks = await _taskService.GetTasks(queryParameters, userId, sortBy, sortDirection, page, pageSize);
 
 				return Ok(tasks);
 			}
