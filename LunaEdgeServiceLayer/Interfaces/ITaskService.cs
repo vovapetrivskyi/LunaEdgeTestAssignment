@@ -9,9 +9,9 @@ namespace LunaEdgeServiceLayer.Interfaces
 {
 	public interface ITaskService
 	{
-		Task<ActionResult<Data.Models.Task>> CreateNewTask(Data.Models.Task task);
-		Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters);
-		Task<ActionResult<Data.Models.Task>> GetTaskById(Guid taskId);
+		Task<Data.Models.Task> CreateNewTask(Data.Models.Task task);
+		Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userId);
+		Task<Data.Models.Task> GetTaskById(Guid taskId, Guid userId);
 		Task<IActionResult> UpdateTask(Data.Models.Task task);
 		Task<IActionResult> DeleteTask(Guid taskId);
 	}

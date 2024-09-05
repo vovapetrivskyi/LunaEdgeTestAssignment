@@ -25,7 +25,8 @@ namespace LunaEdgeServiceLayer.Implementations
 			{
 				Subject = new ClaimsIdentity(new Claim[]
 				{
-					new Claim(ClaimTypes.NameIdentifier, user.Username)
+					new Claim(ClaimTypes.Name, user.Username),
+					new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
 				}),
 				Expires = DateTime.UtcNow.AddHours(1),
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

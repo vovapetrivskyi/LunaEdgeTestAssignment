@@ -21,7 +21,7 @@ namespace LunaEdgeServiceLayer.Implementations
 			_repository = new TaskRepository(_unitOfWork);
 		}
 
-		public async Task<ActionResult<Data.Models.Task>> CreateNewTask(Data.Models.Task task)
+		public async Task<Data.Models.Task> CreateNewTask(Data.Models.Task task)
 		{
 			return await _repository.Create(task);
 		}
@@ -31,14 +31,16 @@ namespace LunaEdgeServiceLayer.Implementations
 			return await _repository.Delete(taskId);
 		}
 
-		public Task<ActionResult<Data.Models.Task>> GetTaskById(Guid taskId)
+		public async Task<Data.Models.Task> GetTaskById(Guid taskId, Guid userGuid)
 		{
-			return _repository.GetById(taskId);
+			var task = await _repository.GetById(taskId);
+
+			return task != null && task.UserId == userGuid ? task : null;
 		}
 
-		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters)
+		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userGuid)
 		{
-			var tasks = (await _repository.Get())?.Value.AsQueryable();
+			var tasks = await _repository.Get();
 
 			if (tasks == null) 
 			{
@@ -46,13 +48,15 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 			else
 			{
+				tasks = tasks.Where(task => task.UserId == userGuid);
+
 				if (parameters != null)
 				{
 					if (parameters.Title != string.Empty)
 					{
 						tasks = tasks.Where(t => t.Title.Contains(parameters.Title));
 					}
-					if (parameters.Description != string.Empty)
+					if (parameters.Description != string.Empty && parameters.Description != null)
 					{
 						tasks = tasks.Where(t => t.Description.Contains(parameters.Description));
 					}
@@ -78,13 +82,13 @@ namespace LunaEdgeServiceLayer.Implementations
 					}
 				}
 
-				return await tasks.ToListAsync();
+				return tasks;
 			}
 		}
 
 		public async System.Threading.Tasks.Task<IActionResult> UpdateTask(Data.Models.Task task)
 		{
-			return await _repository.Update(task.Id, task);
+			return await _repository.Update(task.Id, task, nameof(task.CreatedAt));
 		}
 	}
 }

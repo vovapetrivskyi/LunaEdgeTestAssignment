@@ -18,14 +18,14 @@ namespace LunaEdgeServiceLayer.Implementations
 		}
 
 		//Get Request
-		public async Task<ActionResult<IEnumerable<T>>> Get()
+		public async Task<IEnumerable<T>> Get()
 		{
 			var data = await dbSet.ToListAsync();
-			return Ok(data);
+			return data;
 		}
 
 		//Create Request
-		public async Task<ActionResult<T>> Create(T entity)
+		public async Task<T> Create(T entity)
 		{
 			dbSet.Add(entity);
 			await _unitOfWork.SaveChangesAsync();
@@ -33,7 +33,7 @@ namespace LunaEdgeServiceLayer.Implementations
 		}
 
 		//Update Request
-		public async Task<IActionResult> Update(Guid id, T entity)
+		public async Task<IActionResult> Update(Guid id, T entity, params string[] ignoredProperties)
 		{
 			var existingEntity = await dbSet.FindAsync(id);
 			if (existingEntity == null)
@@ -41,7 +41,14 @@ namespace LunaEdgeServiceLayer.Implementations
 				return NotFound();
 			}
 
-			_unitOfWork.Context.Entry(existingEntity).CurrentValues.SetValues(entity);
+			var entry = _unitOfWork.Context.Entry(existingEntity);
+
+			entry.CurrentValues.SetValues(entity);
+
+			foreach (var propertyName in ignoredProperties)
+			{
+				entry.Property(propertyName).IsModified = false;
+			}
 
 			try
 			{
@@ -69,13 +76,10 @@ namespace LunaEdgeServiceLayer.Implementations
 			return NoContent();
 		}
 
-		public async Task<ActionResult<T>> GetById(Guid id)
+		public async Task<T> GetById(Guid id)
 		{
 			var entity = await dbSet.FindAsync(id);
-			if (entity == null)
-			{
-				return NotFound();
-			}
+
 			return entity;
 		}
 	}
