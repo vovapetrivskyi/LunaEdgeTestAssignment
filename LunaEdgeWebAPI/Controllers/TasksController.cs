@@ -88,7 +88,7 @@ namespace LunaEdgeWebAPI.Controllers
 					UserId = userId
 				};
 
-				await _taskService.UpdateTask(task);
+				await _taskService.UpdateTask(task, userId);
 
 				return Ok();
 			}
@@ -99,11 +99,10 @@ namespace LunaEdgeWebAPI.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteTask(string id)
 		{
-			if (Guid.TryParse(id, out Guid taskId))				
+			if (Guid.TryParse(id, out Guid taskId) &&
+				Guid.TryParse(HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out Guid userId))
 			{
-				await _taskService.DeleteTask(taskId);
-
-				return Ok();
+				return await _taskService.DeleteTask(taskId, userId);
 			}
 
 			return BadRequest();

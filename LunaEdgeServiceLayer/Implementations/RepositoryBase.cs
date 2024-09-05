@@ -59,7 +59,7 @@ namespace LunaEdgeServiceLayer.Implementations
 				throw;
 			}
 
-			return NoContent();
+			return Ok();
 		}
 
 		//Delete Request
@@ -73,14 +73,7 @@ namespace LunaEdgeServiceLayer.Implementations
 
 			dbSet.Remove(entity);
 			await _unitOfWork.SaveChangesAsync();
-			return NoContent();
-		}
-
-		public async Task<T> GetById(Guid id)
-		{
-			var entity = await dbSet.FindAsync(id);
-
-			return entity;
+			return Ok();
 		}
 	}
 }

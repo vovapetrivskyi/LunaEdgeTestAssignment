@@ -1,12 +1,5 @@
-﻿using LunaEdgeServiceLayer.Data.Models;
-using LunaEdgeServiceLayer.Interfaces;
+﻿using LunaEdgeServiceLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
@@ -26,23 +19,21 @@ namespace LunaEdgeServiceLayer.Implementations
 			return await _repository.Create(task);
 		}
 
-		public async System.Threading.Tasks.Task<IActionResult> DeleteTask(Guid taskId)
+		public async System.Threading.Tasks.Task<IActionResult> DeleteTask(Guid taskId, Guid userId)
 		{
-			return await _repository.Delete(taskId);
+			return await _repository.DeleteTask(taskId, userId);
 		}
 
 		public async Task<Data.Models.Task> GetTaskById(Guid taskId, Guid userGuid)
 		{
-			var task = await _repository.GetById(taskId);
-
-			return task != null && task.UserId == userGuid ? task : null;
+			return await _repository.GetTaskByIdAndUser(taskId, userGuid);
 		}
 
 		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userGuid)
 		{
 			var tasks = await _repository.Get();
 
-			if (tasks == null) 
+			if (tasks == null)
 			{
 				return Enumerable.Empty<Data.Models.Task>();
 			}
@@ -86,9 +77,9 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 		}
 
-		public async System.Threading.Tasks.Task<IActionResult> UpdateTask(Data.Models.Task task)
+		public async System.Threading.Tasks.Task<IActionResult> UpdateTask(Data.Models.Task task, Guid userId)
 		{
-			return await _repository.Update(task.Id, task, nameof(task.CreatedAt));
+			return await _repository.UpdateTask(task.Id, task, userId, nameof(task.CreatedAt));
 		}
 	}
 }
