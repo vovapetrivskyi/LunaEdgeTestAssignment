@@ -64,7 +64,7 @@ namespace LunaEdgeWebAPI.Controllers
 			}
 			else
 			{ 
-				return BadRequest();
+				return BadRequest(ModelState.Values.SelectMany(v => v.Errors));
 			}
 		}
 
