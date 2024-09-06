@@ -307,3 +307,10 @@ dotnet run
 > ```
 
 </details>
+
+
+## Architecture and design choises:
+- Project divided into Web API and ServiceLayer. This makes development and testing easier.
+- Use Repository and unit of work patterns. Repository provides abstraction, centralized data access logic, separation of concerns, testability. Unit of Work reduced database calls, gives transaction management, consistency and easy rollback.
+- Use Dependency Injection. It gives centralized configuration, code reusability, maintainability, testability.
+- Logging. This provides error tracking, request/response monitoring, performance monitoring.
