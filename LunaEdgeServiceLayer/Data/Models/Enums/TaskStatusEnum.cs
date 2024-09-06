@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace LunaEdgeServiceLayer.Data.Models.Enums
 {
+	/// <summary>
+	/// Status of the task
+	/// </summary>
 	public enum TaskStatusEnum
 	{
 		Pending,

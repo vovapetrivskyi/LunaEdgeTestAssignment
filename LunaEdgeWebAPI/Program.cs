@@ -28,7 +28,7 @@ namespace LunaEdgeWebAPI
 			builder.Host.UseSerilog();
 
 			builder.Services.AddControllers();
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(c =>
 			{
@@ -63,6 +63,7 @@ namespace LunaEdgeWebAPI
 				});
 			});
 
+			// Add JWT
 			builder.Services.AddAuthentication(options =>
 			{
 				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -81,17 +82,19 @@ namespace LunaEdgeWebAPI
 				};
 			});
 
+			// Inject services
 			builder.Services.AddScoped<ITokenService, TokenService>();
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddScoped<ITaskService, TaskService>();
 			builder.Services.AddTransient<IPasswordService, PasswordService>();
+			builder.Services.AddScoped<IUnitOfwork, UnitOfwork>();
 
+			// Add to have HttpContext access
 			builder.Services.AddHttpContextAccessor();
 
+			// Add DbContext
 			var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");
 			builder.Services.AddDbContext<AppDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-			builder.Services.AddScoped<IUnitOfwork, UnitOfwork>();
 
 			var app = builder.Build();
 
@@ -110,6 +113,7 @@ namespace LunaEdgeWebAPI
 
 			app.MapControllers();
 
+			// Add own middleware
 			app.UseMiddleware<LoggingMiddleware>();
 
 			app.Run();

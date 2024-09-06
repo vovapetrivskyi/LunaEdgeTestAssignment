@@ -5,6 +5,10 @@ using LunaEdgeServiceLayer.Data.Models;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
+	/// <summary>
+	/// Base CRUD operations repository
+	/// </summary>
+	/// <typeparam name="T">Entity class</typeparam>
 	public class RepositoryBase<T> : ControllerBase, IRepository<T> where T : class
 	{
 		protected readonly DbContext _context;
@@ -17,14 +21,21 @@ namespace LunaEdgeServiceLayer.Implementations
 			dbSet = _unitOfWork.Context.Set<T>();
 		}
 
-		//Get Request
+		/// <summary>
+		/// Read data
+		/// </summary>
+		/// <returns>Collection of entities of T class</returns>
 		public async Task<IEnumerable<T>> Get()
 		{
 			var data = await dbSet.ToListAsync();
 			return data;
 		}
 
-		//Create Request
+		/// <summary>
+		/// Create new entity of t class
+		/// </summary>
+		/// <param name="entity">New entity</param>
+		/// <returns>New entity</returns>
 		public async Task<T> Create(T entity)
 		{
 			dbSet.Add(entity);
@@ -32,7 +43,13 @@ namespace LunaEdgeServiceLayer.Implementations
 			return entity;
 		}
 
-		//Update Request
+		/// <summary>
+		/// Update entity
+		/// </summary>
+		/// <param name="id">Id of th e entity for update</param>
+		/// <param name="entity">Entity with new properties values</param>
+		/// <param name="ignoredProperties">Properties that ignored during update</param>
+		/// <returns>Update result</returns>
 		public async Task<IActionResult> Update(Guid id, T entity, params string[] ignoredProperties)
 		{
 			var existingEntity = await dbSet.FindAsync(id);
@@ -62,7 +79,11 @@ namespace LunaEdgeServiceLayer.Implementations
 			return Ok();
 		}
 
-		//Delete Request
+		/// <summary>
+		/// Delete entity
+		/// </summary>
+		/// <param name="id">Id of the entity for delete</param>
+		/// <returns>Delete result</returns>
 		public async Task<IActionResult> Delete(Guid id)
 		{
 			var entity = await dbSet.FindAsync(id);

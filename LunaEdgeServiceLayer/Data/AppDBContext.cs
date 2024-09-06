@@ -1,18 +1,13 @@
 ﻿using LunaEdgeServiceLayer.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LunaEdgeServiceLayer.Data
 {
 	public class AppDBContext : DbContext
 	{
 		public DbSet<User> Users { get; set; }
-		public DbSet<LunaEdgeServiceLayer.Data.Models.Task> Tasks { get; set; }
+		public DbSet<Models.Task> Tasks { get; set; }
 
 		protected readonly IConfiguration configuration;
 
@@ -38,7 +33,7 @@ namespace LunaEdgeServiceLayer.Data
 				entity.ToTable("Users");
 			});
 
-			modelBuilder.Entity<LunaEdgeServiceLayer.Data.Models.Task>(entity =>
+			modelBuilder.Entity<Models.Task>(entity =>
 			{
 				entity.HasKey(x => x.Id);
 				entity.ToTable("Tasks");

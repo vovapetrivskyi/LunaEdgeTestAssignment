@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace LunaEdgeServiceLayer.Data.Models.Enums
 {
+	/// <summary>
+	/// Priority of the task
+	/// </summary>
 	public enum TaskPriorityEnum
 	{
 		Low,

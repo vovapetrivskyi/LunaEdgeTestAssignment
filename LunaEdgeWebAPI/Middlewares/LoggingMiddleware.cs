@@ -39,7 +39,7 @@ namespace LunaEdgeWebAPI.Middlewares
 			{
 				// Log the exception
 				LogError(ex);
-				throw; // Re-throw the exception to ensure the proper status code and behavior is maintained
+				throw;
 			}
 		}
 

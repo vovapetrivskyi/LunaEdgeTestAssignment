@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
+	/// <summary>
+	/// Service for operations with password
+	/// </summary>
 	public class PasswordService : IPasswordService
 	{
+		/// <summary>
+		/// Generate 16 bytes salt
+		/// </summary>
+		/// <returns>Salt as byte array</returns>
 		public byte[] GenerateSalt()
 		{
 			using (var rng = new RNGCryptoServiceProvider())
@@ -20,6 +27,12 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 		}
 
+		/// <summary>
+		/// Hash password using salt
+		/// </summary>
+		/// <param name="password">String password</param>
+		/// <param name="salt">Byte array salt</param>
+		/// <returns>Hashed password string</returns>
 		public string HashPassword(string password, byte[] salt)
 		{
 			using (var sha256 = new SHA256Managed())
@@ -43,6 +56,13 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 		}
 
+		/// <summary>
+		/// Verify input password with hashed
+		/// </summary>
+		/// <param name="dbPassword">Saved in db password</param>
+		/// <param name="password">Input password</param>
+		/// <param name="salt">Saved in db salt</param>
+		/// <returns>Is passwords equal</returns>
 		public bool VerifyPassword(string dbPassword, string password, byte[] salt)
 		{
 			return dbPassword == HashPassword(password, salt);

@@ -8,6 +8,9 @@ using System.Text;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
+	/// <summary>
+	/// Service for generating JSON Web Tokens
+	/// </summary>
 	public class TokenService : ITokenService
 	{
 		private IConfiguration _configuration;
@@ -17,6 +20,11 @@ namespace LunaEdgeServiceLayer.Implementations
 			_configuration = configuration;
 		}
 
+		/// <summary>
+		/// Create token for user
+		/// </summary>
+		/// <param name="user">User</param>
+		/// <returns>JWT</returns>
 		public string CreateToken(User user)
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
@@ -25,8 +33,8 @@ namespace LunaEdgeServiceLayer.Implementations
 			{
 				Subject = new ClaimsIdentity(new Claim[]
 				{
-					new Claim(ClaimTypes.Name, user.Username),
-					new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+					new Claim(ClaimTypes.Name, user.Username),	//add username
+					new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())	//add userId
 				}),
 				Expires = DateTime.UtcNow.AddHours(1),
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

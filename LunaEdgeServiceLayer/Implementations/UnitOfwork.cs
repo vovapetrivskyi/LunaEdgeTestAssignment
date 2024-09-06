@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
+	/// <summary>
+	/// Implementation unit of work pattern
+	/// </summary>
 	public class UnitOfwork : IUnitOfwork
 	{
 		private readonly AppDBContext _context;

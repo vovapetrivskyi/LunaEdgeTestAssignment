@@ -4,6 +4,9 @@ using System.Globalization;
 
 namespace LunaEdgeServiceLayer.Implementations
 {
+	/// <summary>
+	/// Service for operations with tasks
+	/// </summary>
 	public class TaskService : ITaskService
 	{
 		private readonly IUnitOfwork _unitOfWork;
@@ -15,24 +18,51 @@ namespace LunaEdgeServiceLayer.Implementations
 			_repository = new TaskRepository(_unitOfWork);
 		}
 
+		/// <summary>
+		/// Create new task
+		/// </summary>
+		/// <param name="task">New task</param>
+		/// <returns>Saved task</returns>
 		public async Task<Data.Models.Task> CreateNewTask(Data.Models.Task task)
 		{
 			return await _repository.Create(task);
 		}
 
+		/// <summary>
+		/// Delete existing task
+		/// </summary>
+		/// <param name="taskId">Id of the task</param>
+		/// <param name="userId">Id of the user</param>
+		/// <returns>Delete result</returns>
 		public async System.Threading.Tasks.Task<IActionResult> DeleteTask(Guid taskId, Guid userId)
 		{
 			return await _repository.DeleteTask(taskId, userId);
 		}
 
-		public async Task<Data.Models.Task> GetTaskById(Guid taskId, Guid userGuid)
+		/// <summary>
+		/// Find task by id
+		/// </summary>
+		/// <param name="taskId">Id of the task</param>
+		/// <param name="userId">Id of the user</param>
+		/// <returns>Task</returns>
+		public async Task<Data.Models.Task> GetTaskById(Guid taskId, Guid userId)
 		{
-			return await _repository.GetTaskByIdAndUser(taskId, userGuid);
+			return await _repository.GetTaskByIdAndUser(taskId, userId);
 		}
 
-		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryParameters parameters, Guid userGuid, string sortBy, string sortDirection, int page, int pageSize)
+		/// <summary>
+		/// Get task of the authenticated user
+		/// </summary>
+		/// <param name="parameters">filter parameters</param>
+		/// <param name="userId">Id of the user</param>
+		/// <param name="sortBy">Property for sorting</param>
+		/// <param name="sortDirection">Direction of sorting</param>
+		/// <param name="page">Page of collection</param>
+		/// <param name="pageSize">Tasks per page</param>
+		/// <returns>List of tasks</returns>
+		public async Task<IEnumerable<Data.Models.Task>> GetTasks(Data.Models.TaskQueryFilterParameters parameters, Guid userId, string sortBy, string sortDirection, int page, int pageSize)
 		{
-			var tasks = (await _repository.Get()).Where(t => t.UserId == userGuid);
+			var tasks = (await _repository.Get()).Where(t => t.UserId == userId);
 
 			if (tasks == null)
 			{
@@ -40,6 +70,7 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 			else
 			{
+				//filtering
 				if (parameters != null)
 				{
 					if (parameters.Title != string.Empty)
@@ -92,6 +123,12 @@ namespace LunaEdgeServiceLayer.Implementations
 			}
 		}
 
+		/// <summary>
+		/// Update existing task
+		/// </summary>
+		/// <param name="task">Updated task</param>
+		/// <param name="userId">Id of the user</param>
+		/// <returns>Update result</returns>
 		public async System.Threading.Tasks.Task<IActionResult> UpdateTask(Data.Models.Task task, Guid userId)
 		{
 			return await _repository.UpdateTask(task.Id, task, userId, nameof(task.CreatedAt));
@@ -102,7 +139,7 @@ namespace LunaEdgeServiceLayer.Implementations
 		/// </summary>
 		/// <param name="task">Task Object</param>
 		/// <param name="propertyName">Sorting property name</param>
-		/// <returns>Property value </returns>
+		/// <returns>Property value</returns>
 		private object GetPropertyValue(Data.Models.Task task, string propertyName)
 		{
 			return typeof(Data.Models.Task).GetProperty(propertyName)?.GetValue(task, null) ?? 0;

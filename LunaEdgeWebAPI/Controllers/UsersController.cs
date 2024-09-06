@@ -2,10 +2,7 @@
 using LunaEdgeServiceLayer.Interfaces;
 using LunaEdgeWebAPI.Models.Requests;
 using LunaEdgeWebAPI.Models.Responses;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace LunaEdgeWebAPI.Controllers
 {
@@ -24,6 +21,11 @@ namespace LunaEdgeWebAPI.Controllers
 			_passwordService = passwordService;
 		}
 
+		/// <summary>
+		/// Register(crate) new user
+		/// </summary>
+		/// <param name="request">Create user DTO</param>
+		/// <returns>Username and JWT token</returns>
 		[HttpPost]
 		public async Task<IActionResult> Register(RegistrationRequest request)
 		{
@@ -68,6 +70,11 @@ namespace LunaEdgeWebAPI.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Login exist user
+		/// </summary>
+		/// <param name="request">Username and password</param>
+		/// <returns>Username and JWT token</returns>
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginRequest request)
 		{
