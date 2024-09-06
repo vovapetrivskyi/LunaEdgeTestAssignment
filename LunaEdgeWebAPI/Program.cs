@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 namespace LunaEdgeWebAPI
@@ -16,9 +17,15 @@ namespace LunaEdgeWebAPI
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
-			builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-			builder.Services.AddProblemDetails();
+			// Configure Serilog with two sinks: one for requests/responses and another for errors
+			Log.Logger = new LoggerConfiguration()
+				.ReadFrom.Configuration(new ConfigurationBuilder()
+				.AddJsonFile("appsettings.json")
+				.Build())
+				.CreateLogger();
+
+			// Add Serilog
+			builder.Host.UseSerilog();
 
 			builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -103,7 +110,7 @@ namespace LunaEdgeWebAPI
 
 			app.MapControllers();
 
-			app.UseExceptionHandler();
+			app.UseMiddleware<LoggingMiddleware>();
 
 			app.Run();
 		}
