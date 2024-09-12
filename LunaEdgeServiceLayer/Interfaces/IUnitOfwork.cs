@@ -5,7 +5,7 @@ namespace LunaEdgeServiceLayer.Interfaces
 	/// <summary>
 	/// Unit of work pattern interface
 	/// </summary>
-	public interface IUnitOfwork : IDisposable
+	public interface IUnitOfWork : IDisposable
 	{
 		DbContext Context { get; }
 		/// <summary>

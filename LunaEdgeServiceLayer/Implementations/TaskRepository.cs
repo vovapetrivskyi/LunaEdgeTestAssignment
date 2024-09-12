@@ -9,7 +9,7 @@ namespace LunaEdgeServiceLayer.Implementations
 	/// </summary>
 	public class TaskRepository : RepositoryBase<Data.Models.Task>, ITaskRepository
 	{
-		public TaskRepository(IUnitOfwork unitOfwork) : base(unitOfwork)
+		public TaskRepository(IUnitOfWork unitOfwork) : base(unitOfwork)
 		{
 		}
 

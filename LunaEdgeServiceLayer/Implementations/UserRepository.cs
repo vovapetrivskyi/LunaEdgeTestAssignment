@@ -9,7 +9,7 @@ namespace LunaEdgeServiceLayer.Implementations
 	/// </summary>
 	public class UserRepository : RepositoryBase<User>, IUserRepository
 	{
-		public UserRepository(IUnitOfwork unitOfwork) : base(unitOfwork)
+		public UserRepository(IUnitOfWork unitOfwork) : base(unitOfwork)
 		{
 		}
 

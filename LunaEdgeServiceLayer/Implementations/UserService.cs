@@ -9,10 +9,10 @@ namespace LunaEdgeServiceLayer.Implementations
 	/// </summary>
 	public class UserService : IUserService
 	{
-		private readonly IUnitOfwork _unitOfWork;
-		IUserRepository _repository;
+		private readonly IUnitOfWork _unitOfWork;
+		public IUserRepository _repository;
 
-		public UserService(IUnitOfwork unitOfWork)
+		public UserService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 			_repository = new UserRepository(_unitOfWork);

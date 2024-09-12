@@ -87,7 +87,7 @@ namespace LunaEdgeWebAPI
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddScoped<ITaskService, TaskService>();
 			builder.Services.AddTransient<IPasswordService, PasswordService>();
-			builder.Services.AddScoped<IUnitOfwork, UnitOfwork>();
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 			// Add to have HttpContext access
 			builder.Services.AddHttpContextAccessor();

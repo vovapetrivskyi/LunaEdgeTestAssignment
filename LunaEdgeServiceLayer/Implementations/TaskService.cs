@@ -9,10 +9,10 @@ namespace LunaEdgeServiceLayer.Implementations
 	/// </summary>
 	public class TaskService : ITaskService
 	{
-		private readonly IUnitOfwork _unitOfWork;
+		private readonly IUnitOfWork _unitOfWork;
 		ITaskRepository _repository;
 
-		public TaskService(IUnitOfwork unitOfWork)
+		public TaskService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 			_repository = new TaskRepository(_unitOfWork);

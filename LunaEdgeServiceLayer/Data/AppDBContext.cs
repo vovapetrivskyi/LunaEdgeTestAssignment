@@ -6,12 +6,12 @@ namespace LunaEdgeServiceLayer.Data
 {
 	public class AppDBContext : DbContext
 	{
-		public DbSet<User> Users { get; set; }
-		public DbSet<Models.Task> Tasks { get; set; }
+		public virtual DbSet<User> Users { get; set; }
+		public virtual DbSet<Models.Task> Tasks { get; set; }
 
 		protected readonly IConfiguration configuration;
 
-		public AppDBContext(IConfiguration configuration)
+		public AppDBContext(DbContextOptions<AppDBContext> options, IConfiguration configuration) : base(options)
 		{
 			this.configuration = configuration;
 		}
@@ -19,7 +19,11 @@ namespace LunaEdgeServiceLayer.Data
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 		{
 			string connectionString = configuration.GetConnectionString("AppDbConnectionString");
-			options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+			if (!string.IsNullOrWhiteSpace(connectionString))
+			{
+				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+			}
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

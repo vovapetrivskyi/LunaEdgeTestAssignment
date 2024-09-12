@@ -9,7 +9,7 @@ namespace LunaEdgeServiceLayer.Interfaces
 	public interface IUserService
 	{
 		/// <summary>
-		/// Find user by uesrname or email
+		/// Find user by username or email
 		/// </summary>
 		/// <param name="login">Username or email</param>
 		/// <returns>Existing user or null</returns>

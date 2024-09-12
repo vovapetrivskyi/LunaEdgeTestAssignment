@@ -7,12 +7,12 @@ namespace LunaEdgeServiceLayer.Implementations
 	/// <summary>
 	/// Implementation unit of work pattern
 	/// </summary>
-	public class UnitOfwork : IUnitOfwork
+	public class UnitOfWork : IUnitOfWork
 	{
 		private readonly AppDBContext _context;
 		private bool _disposed = false;
 
-		public UnitOfwork(AppDBContext context)
+		public UnitOfWork(AppDBContext context)
 		{
 			_context = context;
 		}

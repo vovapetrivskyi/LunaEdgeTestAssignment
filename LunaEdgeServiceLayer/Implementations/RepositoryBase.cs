@@ -13,9 +13,9 @@ namespace LunaEdgeServiceLayer.Implementations
 	{
 		protected readonly DbContext _context;
 		protected DbSet<T> dbSet;
-		private readonly IUnitOfwork _unitOfWork;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public RepositoryBase(IUnitOfwork unitOfwork)
+		public RepositoryBase(IUnitOfWork unitOfwork)
 		{
 			_unitOfWork = unitOfwork;
 			dbSet = _unitOfWork.Context.Set<T>();
