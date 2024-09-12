@@ -6,8 +6,8 @@ namespace LunaEdgeServiceLayer.Data
 {
 	public class AppDBContext : DbContext
 	{
-		public virtual DbSet<User> Users { get; set; }
-		public virtual DbSet<Models.Task> Tasks { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<Models.Task> Tasks { get; set; }
 
 		protected readonly IConfiguration configuration;
 
